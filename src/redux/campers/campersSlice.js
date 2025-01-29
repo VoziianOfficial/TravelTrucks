@@ -1,35 +1,40 @@
-//src/redux/campers/campersSlice.js
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchCampers } from '../../api/api';
-
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchCampersThunk, fetchCamperByIdThunk } from "./operations";
 
 const initialState = {
     campers: [],
-    status: 'idle',
+    selectedCamper: null,
+    status: "idle",
     error: null,
 };
 
-export const fetchCampersThunk = createAsyncThunk('campers/fetchCampers', async (params) => {
-    const response = await fetchCampers(params);
-    return response.data;
-});
-
 const campersSlice = createSlice({
-    name: 'campers',
+    name: "campers",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(fetchCampersThunk.pending, (state) => {
-                state.status = 'loading';
+                state.status = "loading";
             })
             .addCase(fetchCampersThunk.fulfilled, (state, action) => {
-                state.status = 'succeeded';
+                state.status = "succeeded";
                 state.campers = action.payload;
             })
             .addCase(fetchCampersThunk.rejected, (state, action) => {
-                state.status = 'failed';
-                state.error = action.error.message;
+                state.status = "failed";
+                state.error = action.payload;
+            })
+            .addCase(fetchCamperByIdThunk.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(fetchCamperByIdThunk.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.selectedCamper = action.payload;
+            })
+            .addCase(fetchCamperByIdThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
             });
     },
 });

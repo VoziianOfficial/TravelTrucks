@@ -1,35 +1,29 @@
 //src/redux/favorites/favoritesSlice.js
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchFavorites } from '../../api/api';
-
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchFavoritesThunk } from "./operations.js";
 
 const initialState = {
     favorites: [],
-    status: 'idle',
+    status: "idle",
     error: null,
 };
 
-export const fetchFavoritesThunk = createAsyncThunk('favorites/fetchFavorites', async (params) => {
-    const response = await fetchFavorites(params);
-    return response.data;
-});
-
 const favoritesSlice = createSlice({
-    name: 'favorites',
+    name: "favorites",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(fetchFavoritesThunk.pending, (state) => {
-                state.status = 'loading';
+                state.status = "loading";
             })
             .addCase(fetchFavoritesThunk.fulfilled, (state, action) => {
-                state.status = 'succeeded';
+                state.status = "succeeded";
                 state.favorites = action.payload;
             })
             .addCase(fetchFavoritesThunk.rejected, (state, action) => {
-                state.status = 'failed';
-                state.error = action.error.message;
+                state.status = "failed";
+                state.error = action.payload;
             });
     },
 });
