@@ -1,0 +1,72 @@
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.infoTitle {
+    display: flex;
+    justify-content: space-between;
+}
+
+.title {
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 1.33;
+    color: #101828;
+}
+
+.wrapper {
+    display: flex;
+    gap: 12px;
+}
+
+.price {
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 1.33;
+    color: #101828;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+
+    &:hover svg {
+        fill: var(--color-button-hover);
+    }
+
+    svg {
+        width: 24px;
+        height: 24px;
+        transition: var(--transition);
+    }
+
+
+}
+
+.infoDetails {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+
+.ratingText,
+.ratingLink,
+.location {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    svg {
+        width: 16px;
+        height: 16px;
+    }
+
+
+}

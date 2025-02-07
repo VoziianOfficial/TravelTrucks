@@ -1,42 +1,64 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchCampersThunk, fetchCamperByIdThunk } from "./operations";
+import { fetchCampers, fetchCamperById } from "./operations";
 
 const initialState = {
-    campers: [],
-    selectedCamper: null,
-    status: "idle",
-    error: null,
+    campers: [],         // Список кемперов
+    currentCamper: null, // Выбранный кемпер (для детальной страницы)
+    totalCampers: null,  // Общее количество кемперов (если сервер передает)
+    isLoading: false,    // Флаг загрузки
+    error: null,         // Ошибки API
 };
 
 const campersSlice = createSlice({
     name: "campers",
     initialState,
-    reducers: {},
+    reducers: {
+        resetCampers: (state) => {
+            state.campers = [];
+            state.totalCampers = null;
+        },
+    },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchCampersThunk.pending, (state) => {
-                state.status = "loading";
+            // 🔹 Загрузка списка кемперов
+            .addCase(fetchCampers.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
             })
-            .addCase(fetchCampersThunk.fulfilled, (state, action) => {
-                state.status = "succeeded";
-                state.campers = action.payload;
+            .addCase(fetchCampers.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.totalCampers = action.payload.total;
+
+                // Фильтруем дубликаты (если загружаем следующую страницу)
+                const newCampers = action.payload.items.filter(
+                    (newCamper) =>
+                        !state.campers.some(
+                            (existingCamper) => existingCamper.id === newCamper.id
+                        )
+                );
+                state.campers = [...state.campers, ...newCampers];
             })
-            .addCase(fetchCampersThunk.rejected, (state, action) => {
-                state.status = "failed";
+            .addCase(fetchCampers.rejected, (state, action) => {
+                state.isLoading = false;
                 state.error = action.payload;
             })
-            .addCase(fetchCamperByIdThunk.pending, (state) => {
-                state.status = "loading";
+
+            // 🔹 Загрузка одного кемпера по ID
+            .addCase(fetchCamperById.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
             })
-            .addCase(fetchCamperByIdThunk.fulfilled, (state, action) => {
-                state.status = "succeeded";
-                state.selectedCamper = action.payload;
+            .addCase(fetchCamperById.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.currentCamper = action.payload;
             })
-            .addCase(fetchCamperByIdThunk.rejected, (state, action) => {
-                state.status = "failed";
+            .addCase(fetchCamperById.rejected, (state, action) => {
+                state.isLoading = false;
                 state.error = action.payload;
             });
     },
 });
 
-export default campersSlice.reducer;
+// 🔹 Экспорт экшенов и редюсера
+export const { resetCampers } = campersSlice.actions;
+export const campersReducer = campersSlice.reducer;

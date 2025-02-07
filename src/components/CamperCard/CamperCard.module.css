@@ -1,0 +1,22 @@
+/* CamperCard.module.css */
+
+.cardItem {
+    display: flex;
+    gap: 24px;
+    border: 1px solid lightgray;
+    border-radius: 20px;
+    padding: 24px;
+    width: 888px;
+    box-sizing: border-box;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.contentCard {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+}

@@ -35,3 +35,7 @@
 .LinkBtn:hover {
     color: #e44848;
 }
+
+.LinkBtn:focus {
+    color: #e44848;
+}

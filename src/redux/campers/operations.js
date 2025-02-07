@@ -1,15 +1,28 @@
-//src/redux/campers/operations.js
+// src/redux/campers/operations.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchCampers as fetchCampersService, fetchCamperById as fetchCamperByIdService } from "../../services/campersService";
+import axios from "axios";
 import { handleApiError } from "../../utils/apiErrorHandler";
 
+const API_BASE_URL = "https://traveltrucks-backend.onrender.com/api/campers";
 
 // get all campers
 export const fetchCampersThunk = createAsyncThunk(
     "campers/fetchAll",
-    async (params, thunkApi) => {
+    async (filters, thunkApi) => {
         try {
-            return await fetchCampersService(params);
+            const filteredParams = {};
+            for (const key in filters) {
+                if (filters[key] !== false) {
+                    filteredParams[key] = filters[key];
+                }
+            }
+
+            // console.log("Filtered Params:", filteredParams);
+            const { data } = await axios.get(API_BASE_URL, {
+                params: filteredParams,
+            });
+            console.log("API Response:", data);
+            return data.data.items;
         } catch (error) {
             return handleApiError(error, thunkApi);
         }
@@ -21,7 +34,8 @@ export const fetchCamperByIdThunk = createAsyncThunk(
     "campers/fetchById",
     async (id, thunkApi) => {
         try {
-            return await fetchCamperByIdService(id);
+            const response = await axios.get(`${API_BASE_URL}/${id}`);
+            return response.data.data;
         } catch (error) {
             return handleApiError(error, thunkApi);
         }
