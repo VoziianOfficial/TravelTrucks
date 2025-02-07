@@ -7,7 +7,9 @@ import s from './CamperInfo.module.css';
 const CamperInfo = ({ camper, isDetailed = false }) => {
     const dispatch = useDispatch(); // Обновляет глобальное состояние приложения
     const favorites = useSelector(selectFavorites); // Получает список избранных элементов из Redux-хранилища
-    const isFavorite = favorites.includes(camper.id); // Проверяет, добавлен ли этот camper в избранное
+
+    // Проверьте, что favorites является массивом, прежде чем вызывать includes
+    const isFavorite = Array.isArray(favorites) && favorites.includes(camper.id);
 
     return (
         <div className={clsx(s.info, isDetailed && s.detailedInfo)}>

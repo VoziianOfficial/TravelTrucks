@@ -5,7 +5,7 @@ import { handleApiError } from "../../utils/apiErrorHandler";
 
 const API_BASE_URL = "https://traveltrucks-backend.onrender.com/api/campers";
 
-// get all campers
+// Обработка ошибки с проверкой
 export const fetchCampersThunk = createAsyncThunk(
     "campers/fetchAll",
     async (filters, thunkApi) => {
@@ -17,12 +17,16 @@ export const fetchCampersThunk = createAsyncThunk(
                 }
             }
 
-            // console.log("Filtered Params:", filteredParams);
             const { data } = await axios.get(API_BASE_URL, {
                 params: filteredParams,
             });
+
+            if (!data.data || !Array.isArray(data.data.items)) {
+                return [];
+            }
+
             console.log("API Response:", data);
-            return data.data.items;
+            return data.data.items; // Возвращаем массив или пустой массив
         } catch (error) {
             return handleApiError(error, thunkApi);
         }
