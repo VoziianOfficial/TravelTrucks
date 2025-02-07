@@ -12,7 +12,6 @@ import ShowMoreButton from "../ShowMoreButton/ShowMoreButton";
 
 
 const CamperCard = ({ camper }) => {
-    console.log(camper); // Выводим camper в консоль
     return (
         <li className={s.cardItem}>
             <CamperGallery images={camper.gallery} isPreview={true} />
